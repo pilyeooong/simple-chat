@@ -22,6 +22,20 @@ RSpec.describe ChatRoomsController, type: :controller do
       expect(chat_rooms.size).to eq(size)
     end
 
+    it "create chat room" do
+      user = create(:user)
+
+      name = "chat room name"
+      description = "description"
+
+      post :create, params: { user_id: user.id.to_s, name: name, description: description }
+
+      parsed_body = JSON.parse(response.body)
+      chat_room = parsed_body["chat_room"]
+
+      expect(chat_room).not_to be_nil
+    end
+
     it "return chat room detail" do
       user = create(:user)
       chat_room = create(:chat_room, admin: user)
