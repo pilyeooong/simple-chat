@@ -3,7 +3,7 @@ class ChatMessagesController < ApplicationController
     chat_room_id = params[:chat_room_id]
 
     chat_room = ChatRoom.find_by(id: chat_room_id)
-    raise Exception.new('ChatRoom Not Exists') if chat_room.nil?
+    raise Errors::NotExist.new(Errors::CHAT_ROOM_NOT_EXIST_MESSAGE) if chat_room.nil?
 
     chat_messages = ChatMessage.where(chat_room: chat_room).order(created_at: :desc)
 
@@ -15,10 +15,10 @@ class ChatMessagesController < ApplicationController
     user_id = params[:user_id]
 
     chat_room = ChatRoom.find_by(id: chat_room_id)
-    raise Errors::NotFound.new("ChatRoom") if chat_room.nil?
+    raise Errors::NotExist.new(Errors::CHAT_ROOM_NOT_EXIST_MESSAGE) if chat_room.nil?
 
     user = User.find_by(id: user_id)
-    raise Errors::NotFound.new('User') if user.nil?
+    raise Errors::NotExist.new(Errors::USER_NOT_EXIST_MESSAGE) if chat_room.nil?
 
     chat_message = ChatMessage.create!(user: user, chat_room: chat_room, content: "Hello World! #{Time.zone.now.to_i}")
 

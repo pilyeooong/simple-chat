@@ -5,7 +5,10 @@ module Errors
   FORBIDDEN = 403
   FORBIDDEN_MESSAGE = "Forbidden"
 
-  NOT_EXISTS = 404
+  NOT_EXIST = 404
+
+  CHAT_ROOM_NOT_EXIST_MESSAGE = "채팅방이 존재하지 않습니다."
+  USER_NOT_EXIST_MESSAGE = "유저가 존재하지 않습니다."
 
   class Forbidden < StandardError
     def message
@@ -27,17 +30,13 @@ module Errors
     end
   end
 
-  class NotFound < StandardError
-    def initialize(item)
-      @item = item
-    end
-
-    def message
-      "#{@item} not exists"
+  class NotExist < StandardError
+    def initialize(message)
+      super(message)
     end
 
     def error_code
-      NOT_FOUND
+      NOT_EXIST
     end
   end
 end
