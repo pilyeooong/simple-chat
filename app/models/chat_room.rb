@@ -5,5 +5,7 @@ class ChatRoom
   field :type, type: String
   field :name, type: String
   field :description, type: String
-  field :participants_count, type: Integer
+  field :participants_count, type: Integer, default: 0
+
+  has_many :chat_messages
 end
