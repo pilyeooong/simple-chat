@@ -8,5 +8,6 @@ Rails.application.routes.draw do
   get "chat_rooms/:id", to: "chat_rooms#detail"
   post "chat_rooms/:id/participate", to: "chat_rooms#participate"
 
+  get "chat_rooms/:chat_room_id/messages", to: "chat_messages#index"
   post "chat_rooms/:chat_room_id/messages", to: "chat_messages#create"
 end

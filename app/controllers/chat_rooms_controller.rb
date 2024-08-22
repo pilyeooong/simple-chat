@@ -1,21 +1,26 @@
 class ChatRoomsController < ApplicationController
   def index
-    page = params[:page]
     limit = params[:limit]
-
-    if page.present?
-      page = page.to_i
-    else
-      page = 1
-    end
+    participants_count_cursor = params[:participants_count_cursor]
+    time_cursor = params[:time_cursor]
 
     if limit.present?
       limit = limit.to_i
     else
-      limit = 20
+      limit = 30
     end
 
-    chat_rooms = ChatRoom.where(deleted_at: nil).order(created_at: :desc).offset((page - 1) * limit).limit(limit)
+    # TODO: 쿼리 검증 필요
+    query_params = {}
+    query_params[:deleted_at] = nil
+    query_params[:active_participants_count] = { "$lte": participants_count_cursor } if participants_count_cursor.present?
+    query_params[:updated_at] = { "$lt": time_cursor } if participants_count_cursor.present?
+    # query_params[:"$or"] = [{ latest_chat_message: nil }, { "latest_chat_message.created_at": { "$lt": Time.at(timestamp_cursor.to_i) }}] if timestamp_cursor.present?
+
+    chat_rooms = ChatRoom
+                   .where(query_params)
+                   .order(active_participants_count: :desc, "latest_chat_message.created_at": :desc)
+                   .limit(limit)
 
     render json: { chat_rooms: chat_rooms }, status: :ok
   end
@@ -54,7 +59,12 @@ class ChatRoomsController < ApplicationController
 
     chat_room_participant = ChatRoomParticipant.find_or_create_by!(user: user, chat_room: chat_room)
 
+    UpdateLastActiveAtJob.perform_async({ chat_room_id: chat_room.id.to_s, user_id: user.id.to_s }.as_json)
     CountChatRoomParticipantsJob.perform_async({ chat_room_id: chat_room.id.to_s }.as_json)
+
+    # 접속 기록
+    REDIS.zadd(CachePolicy.active_chat_rooms, Time.zone.now.to_i, chat_room.id.to_s)
+    REDIS.zadd(CachePolicy.chat_room_active_users(chat_room.id.to_s), Time.zone.now.to_i, user.id.to_s)
 
     render json: { chat_room_participant: chat_room_participant }, status: :ok
   end

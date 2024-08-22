@@ -8,6 +8,6 @@ class ChatMessage
   belongs_to :chat_room, index: true
   belongs_to :user, index: true
 
-  index({ deleted_at: 1 })
+  index({ chat_room: 1, deleted_at: 1, created_at: -1 })
 
 end

@@ -8,12 +8,12 @@ class CountChatRoomParticipantsJob
     return if chat_room.nil?
 
     chat_room_participants_count = ChatRoomParticipant.where(chat_room_id: chat_room_id).count
-    pp chat_room_participants_count
 
-    chat_room.update!(participants_count: chat_room_participants_count)
+    chat_room.update!(total_participants_count: chat_room_participants_count)
 
     return
   rescue Exception => e
-    pp e
+    error_message = e.message + "\n" + e.backtrace.join("\n")
+    Rails.logger.error(error_message)
   end
 end

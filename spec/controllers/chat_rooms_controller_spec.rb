@@ -13,13 +13,25 @@ RSpec.describe ChatRoomsController, type: :controller do
         create(:chat_room, admin: user)
       end
 
-      get :index, params: { page: 1, limit: size }
+      get :index, params: { participants_count_cursor: 10, time_cursor: Time.zone.now + 1.day, limit: size }
 
       parsed_body = JSON.parse(response.body)
       chat_rooms = parsed_body["chat_rooms"]
 
       expect(chat_rooms).not_to be_nil
       expect(chat_rooms.size).to eq(size)
+    end
+
+    it "chat rooms pagination" do
+      user = create(:user)
+      10.times do |n|
+        create(:chat_room, admin: user, active_participants_count: n + 1)
+      end
+
+      get :index, params: { participants_count_cursor: 10, time_cursor: Time.zone.now + 1.day, limit: 3 }
+
+      parsed_body = JSON.parse(response.body)
+      chat_rooms = parsed_body["chat_rooms"]
     end
 
     it "create chat room" do
@@ -56,6 +68,17 @@ RSpec.describe ChatRoomsController, type: :controller do
       error_message = parsed_body["error"]["message"]
 
       expect(error_message).to eq(Errors::CHAT_ROOM_NOT_EXIST_MESSAGE)
+    end
+
+    it "participate chat room" do
+      user = create(:user)
+      chat_room = create(:chat_room, admin: user)
+
+      post :participate, params: { id: chat_room.id.to_s, user_id: user.id.to_s }
+
+      chat_room_participants = ChatRoomParticipant.where(chat_room: chat_room)
+
+      expect(chat_room_participants.size).to eq(1)
     end
   end
 end
