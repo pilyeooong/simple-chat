@@ -12,7 +12,7 @@ class UpdateLatestChatMessageJob
 
     # 채팅방의 latest_chat_message 필드 업데이트 후, 채팅방 리스트 채널에 업데이트 내용을 브로드캐스팅한다.
     ActionCable.server.broadcast(ChannelPolicy.chat_room_list_channel, {
-      message: chat_message.as_json,
+      chat_room: chat_room.as_json,
     })
 
     return
