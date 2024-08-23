@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::API
+  rescue_from Errors::Forbidden, with: :handle_error
+  rescue_from Errors::InvalidRequest, with: :handle_error
+  rescue_from Errors::NotExist, with: :handle_error
   rescue_from Exception, with: :handle_error
 
   def handle_error(e)

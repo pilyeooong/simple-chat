@@ -36,5 +36,33 @@ RSpec.describe ChatMessagesController, type: :controller do
       expect(chat_room.chat_messages.size).not_to eq(0)
       expect(message_content).to eq(content)
     end
+
+    it "should raise error if chat room not exists" do
+      user = create(:user)
+
+      content = "message !"
+
+      post :create, params: { user_id: user.id.to_s, chat_room_id: "invalid", content: content }
+
+      parsed_body = JSON.parse(response.body)
+      error_message = parsed_body["error"]["message"]
+
+      expect(error_message).to eq(Errors::CHAT_ROOM_NOT_EXIST_MESSAGE)
+    end
+
+    it "should raise error if user not participate to chat room" do
+      user = create(:user)
+      chat_room = create(:chat_room, admin: user)
+
+      content = "message !"
+
+      post :create, params: { user_id: user.id.to_s, chat_room_id: chat_room.id.to_s, content: content }
+
+      parsed_body = JSON.parse(response.body)
+      error_message = parsed_body["error"]["message"]
+
+      expect(error_message).to eq(Errors::FORBIDDEN_MESSAGE)
+
+    end
   end
 end

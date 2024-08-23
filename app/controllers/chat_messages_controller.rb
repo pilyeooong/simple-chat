@@ -42,9 +42,10 @@ class ChatMessagesController < ApplicationController
     UpdateLatestChatMessageJob.perform_async({ chat_room_id: chat_room.id.to_s, chat_message: chat_message.as_json }.as_json)
 
     # 채팅 메시지를 생성 및 DB에 저장한 후, 해당 채팅방 채널에 메시지 내용을 브로드캐스팅한다.
+    chat_message_obj = chat_message.as_json
+    chat_message_obj["user"] = user.as_json
     ActionCable.server.broadcast(ChannelPolicy.chat_room_channel(chat_room.id.to_s), {
-      message: chat_message.as_json,
-      user: user.as_json
+      chat_message: chat_message_obj,
     })
 
     render json: { chat_message: chat_message }, status: :ok
