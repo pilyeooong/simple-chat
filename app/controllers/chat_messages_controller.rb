@@ -39,6 +39,7 @@ class ChatMessagesController < ApplicationController
 
     chat_message = ChatMessage.create!(user: user, chat_room: chat_room, content: content)
 
+    UpdateLastActiveAtJob.perform_async({ chat_room_id: chat_room.id.to_s, user_id: user.id.to_s }.as_json)
     UpdateLatestChatMessageJob.perform_async({ chat_room_id: chat_room.id.to_s, chat_message: chat_message.as_json }.as_json)
 
     # 채팅 메시지를 생성 및 DB에 저장한 후, 해당 채팅방 채널에 메시지 내용을 브로드캐스팅한다.
