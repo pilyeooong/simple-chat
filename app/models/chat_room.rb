@@ -14,5 +14,5 @@ class ChatRoom
 
   index({ deleted_at: 1 })
   index({ id: 1, deleted_at: 1 })
-  index({ name: 1 }, { unique: true })
+  index({ name: 1, deleted_at: 1 }, { unique: true })
 end

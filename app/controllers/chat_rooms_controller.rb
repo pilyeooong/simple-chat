@@ -38,8 +38,14 @@ class ChatRoomsController < ApplicationController
     name = params[:name]
     description = params[:description]
 
+    raise Errors::InvalidRequest.new(Errors::NAME_FIELD_REQUIRED_MESSAGE) if name.blank?
+    raise Errors::InvalidRequest.new(Errors::DESCRIPTION_FIELD_REQUIRED_MESSAGE) if description.blank?
+
     user = User.find_by(id: user_id)
     raise Errors::NotExist.new(Errors::USER_NOT_EXIST_MESSAGE) if user.nil?
+
+    chat_room = ChatRoom.find_by(name: name, deleted_at: nil)
+    raise Errors::InvalidRequest.new(Errors::CHAT_ROOM_ALREADY_EXISTS_MESSAGE) if chat_room.present?
 
     new_chat_room = ChatRoom.create!(name: name, description: description, admin: user)
 
