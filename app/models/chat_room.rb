@@ -14,5 +14,6 @@ class ChatRoom
 
   index({ deleted_at: 1 })
   index({ id: 1, deleted_at: 1 })
+  index({ deleted_at: 1, active_participants_count: -1, "latest_chat_message_id": -1 })
   index({ name: 1, deleted_at: 1 }, { unique: true })
 end
