@@ -61,7 +61,7 @@ RSpec.describe ChatMessagesController, type: :controller do
       parsed_body = JSON.parse(response.body)
       error_message = parsed_body["error"]["message"]
 
-      expect(error_message).to eq(Errors::FORBIDDEN_MESSAGE)
+      expect(error_message).to eq(Errors::PARTICIPATE_CHAT_ROOM_REQUIRED_MESSAGE)
 
     end
   end

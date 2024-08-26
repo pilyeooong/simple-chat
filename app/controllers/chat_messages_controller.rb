@@ -35,7 +35,7 @@ class ChatMessagesController < ApplicationController
     raise Errors::NotExist.new(Errors::USER_NOT_EXIST_MESSAGE) if chat_room.nil?
 
     chat_room_participant = ChatRoomParticipant.find_by(chat_room_id: chat_room_id, user_id: user_id)
-    raise Errors::Forbidden.new if chat_room_participant.nil?
+    raise Errors::Forbidden.new(Errors::PARTICIPATE_CHAT_ROOM_REQUIRED_MESSAGE) if chat_room_participant.nil?
 
     chat_message = ChatMessage.create!(user: user, chat_room: chat_room, content: content)
 

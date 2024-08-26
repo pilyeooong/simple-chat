@@ -13,10 +13,11 @@ module Errors
   NAME_FIELD_REQUIRED_MESSAGE = "name 필드는 필수값입니다."
   DESCRIPTION_FIELD_REQUIRED_MESSAGE = "description 필드는 필수값입니다."
   CHAT_ROOM_ALREADY_EXISTS_MESSAGE = "동일한 이름의 채팅방이 이미 존재합니다."
+  PARTICIPATE_CHAT_ROOM_REQUIRED_MESSAGE = "메시지 발송을 위해서는 채팅방에 먼저 참여하여야 합니다."
 
   class Forbidden < StandardError
-    def message
-      FORBIDDEN_MESSAGE
+    def initialize(message = FORBIDDEN_MESSAGE)
+      super(message)
     end
 
     def error_code
