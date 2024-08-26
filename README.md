@@ -2,15 +2,21 @@
 
 ### 사용 기술
 - Ruby (3.3.0)
+- Ruby On Rails (7.1.3)
 - MongoDB (6.0.16)
 - Redis (7.2.4)
-- Rails
 - Sidekiq
 - Action cable
 
+### 설명
+채팅방 기능을 위한 백엔드 서버입니다. Ruby On Rails, MongoDB를 사용하였고, 채팅방 목록, 채팅방 내부에서 사용이 될 API와 웹 소켓이 구현되어 있습니다.
+API의 경우 REST 기반으로 작성이 되었고, 웹 소켓의 경우 Action cable을 활용하여 구현하였습니다.
+그 외에 background job 및 스케줄링에 대해서는 Sidekiq, Sidekiq scheduler를 활용하였습니다.
+
 ### 실행 방법
-해당 프로젝트 실행을 위해서 Ruby, MongoDB, Redis 설치가 선행 되어야 합니다.
-프로젝트 실행 및 셋업에 필요한 환경변수는 .env.sample에 작성되어있습니다.
+해당 프로젝트 실행을 위해서는 위에 명시 되있거나 호환 가능한 버전의 Ruby, MongoDB, Redis 설치가 선행 되어야 합니다.
+
+- `git clone https://github.com/pilyeooong/simple-chat.git`
 - `bundle install`
   - 프로젝트 실행에 필요한 의존성 및 라이브러리들을 설치합니다.
 - `db:mongoid:create_indexes`
@@ -53,7 +59,12 @@ GET http://localhost:3000/chat_rooms?page=1&limit=30
 }
 ```
 
-### # 채팅방 상세
+**Request example**
+```http request
+POST http://localhost:3000/chat_rooms
+```
+
+### # 채팅방 디테일
 **Endpoint**: /chat_rooms/1
 
 **Method**: GET
