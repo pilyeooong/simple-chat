@@ -29,6 +29,8 @@ API의 경우 REST 기반으로 작성이 되었고, 웹 소켓의 경우 Action
 
 ## API docs
 
+Postman을 사용하신다면 simple chat server.postman_collection.json을 import를 통해 빠르게 API 테스트가 가능합니다.
+
 ### # 채팅방 목록
 **Endpoint**: /chat_rooms
 
